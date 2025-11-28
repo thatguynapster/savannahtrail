@@ -43,9 +43,9 @@ const AboutPage = (props: Props) => {
                             <p className="mb-8 text-gray-600">
                                 Our mission is to empower diasporans and cultural seekers to explore their roots, deepen their identity, and contribute to heritage preservation. With warmth, authenticity, and respect, we create journeys that don't just visit — they transform.
                             </p>
-                            <button className="btn-primary flex items-center">
+                            {/* <button className="btn-primary flex items-center">
                                 Read More <ArrowRight className="ml-2 w-5 h-5" />
-                            </button>
+                            </button> */}
                         </div>
                     </div>
                 </div>

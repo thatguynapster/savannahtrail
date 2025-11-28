@@ -11,14 +11,13 @@ const labelVariants = cva(
 )
 
 const Label = React.forwardRef<
-
   React.ElementRef<typeof LabelPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof LabelPrimitive.Root> &
-  VariantProps<typeof labelVariants> & { inputValue?: string }
->(({ className, inputValue, ...props }, ref) => (
+    VariantProps<typeof labelVariants>
+>(({ className, ...props }, ref) => (
   <LabelPrimitive.Root
     ref={ref}
-    className={cn(labelVariants(), 'absolute left-2 cursor-text text-sm transition-all group-focus-within:-translate-y-full pointer-events-none', { "-translate-y-full text-": inputValue }, className)}
+    className={cn(labelVariants(), className)}
     {...props}
   />
 ))

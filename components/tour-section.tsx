@@ -1,6 +1,7 @@
-import clsx from 'clsx';
 import { ArrowRight } from 'lucide-react';
-import React from 'react'
+import clsx from 'clsx';
+import queryString from 'query-string';
+import { getTourPackages } from "@/lib/actions/packages";
 
 type Props = {}
 
@@ -37,7 +38,8 @@ const destinations = [
     }
 ];
 
-const ToursSection = (props: Props) => {
+export default async function TourSection(props: Props) {
+
     return (
         <section className="py-20 bg-gray-50">
             <div className="container mx-auto px-4">
@@ -45,9 +47,12 @@ const ToursSection = (props: Props) => {
                     <h3 className="section-subtitle">TOP DESTINATIONS</h3>
                     <div className="flex flex-col md:flex-row justify-between items-end">
                         <h2 className="section-title mb-0 font-bold font-volkhov">Explore the Best of Africa's Rich Heritage & Culture</h2>
-                        <button className="btn-primary flex items-center mt-4 md:mt-0">
+                        <a
+                            href='/services/tour-packages'
+                            className="btn-primary flex items-center mt-4 md:mt-0 whitespace-nowrap"
+                        >
                             View All <ArrowRight className="ml-2 w-5 h-5" />
-                        </button>
+                        </a>
                     </div>
                 </div>
 
@@ -73,9 +78,9 @@ const ToursSection = (props: Props) => {
                                         <p className="mt-2 text-white/80">From vibrant festivals to ancestral landmarks, discover immersive destinations that connect you to the soul of Africa.</p>
                                     )}
                                     <div className="mt-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                                        <button className="bg-primary text-white px-4 py-2 rounded-md text-sm">
+                                        <a href={`/services/tour-packages?${queryString.stringify({ city: destination.name })}`} className="bg-primary text-white px-4 py-2 rounded-md text-sm">
                                             Explore Now
-                                        </button>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
@@ -86,5 +91,3 @@ const ToursSection = (props: Props) => {
         </section >
     )
 }
-
-export default ToursSection

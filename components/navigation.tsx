@@ -10,23 +10,32 @@ import NavItem from './nav-item'
 
 type Props = {}
 
+interface NavigationItem {
+    name: string;
+    href: string;
+    sub?: Omit<NavigationItem, 'sub'>[];
+}
+
 const Navigation = ({ }: Props) => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-    const navigation = [
+    const navigation: NavigationItem[] = [
         { name: 'Home', href: '/' },
         { name: 'About', href: '/about' },
-        {
-            name: 'Services', sub: [
-                { name: 'Tour Packages', href: '/services/tour-packages' },
-                { name: 'Personalized Experience', href: '/services/personalized-experience' },
-                { name: 'Accommodation', href: '/services/accommodation' },
-                { name: 'Car Rental', href: '/services/car-rental' },
-                { name: 'Guided Cultural Tours', href: '/services/guided-cultural-tours' },
-            ]
-        },
-        { name: 'Upcoming Packages', href: '/packages' },
+        // {
+        //     name: 'Services',
+        //     href: '#',
+        //     sub: [
+        //         { name: 'Tour Packages', href: '/services/tour-packages' },
+        //         { name: 'Personalized Experience', href: '/services/personalized-experience' },
+        //         { name: 'Accommodation', href: '/services/accommodation' },
+        //         { name: 'Car Rental', href: '/services/car-rental' },
+        //         { name: 'Guided Cultural Tours', href: '/services/guided-cultural-tours' },
+        //     ]
+        // },
+        { name: 'Tour Packages', href: '/services/tour-packages' },
+        // { name: 'Upcoming Packages', href: '/packages' },
     ]
 
     useEffect(() => {

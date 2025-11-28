@@ -26,7 +26,7 @@ const HeroSection = (props: Props) => {
                                 and explore Africa through authentic, immersive cultural experiences. Your journey home begins here
                             </p>
 
-                            <BookingForm />
+                            {/* <BookingForm /> */}
                         </div>
                     </div>
                 </div>
