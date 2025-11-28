@@ -25,16 +25,45 @@ class ApiClient {
 			}
 		};
 
-		const response = await fetch(`${this.baseURL}${endpoint}`, config);
+		try {
+			const response = await fetch(`${this.baseURL}${endpoint}`, config);
 
-		if (!response.ok) {
-			const error = await response
-				.json()
-				.catch(() => ({ message: "Network error" }));
-			throw new Error(error.message || `HTTP ${response.status}`);
+			if (!response.ok) {
+				const error = await response
+					.json()
+					.catch(() => ({ message: "Network error" }));
+				throw new Error(
+					error.message || `HTTP error ${response.status}`
+				);
+			}
+
+			const data = await response.json();
+
+			// Validate response structure
+			if (typeof data !== "object" || data === null) {
+				throw new Error("Invalid API response: expected object");
+			}
+
+			// Normalize response structure to always use 'responses' field
+			// The API returns 'response' (singular) for single items and 'responses' (plural) for lists
+			// We normalize to 'responses' for consistency in the codebase
+			if ("response" in data && !("responses" in data)) {
+				return {
+					...data,
+					responses: data.response
+				} as T;
+			}
+
+			// If 'responses' already exists or neither field exists, return as-is
+			return data as T;
+		} catch (error) {
+			// Re-throw Error objects with descriptive messages
+			if (error instanceof Error) {
+				throw error;
+			}
+			// Wrap non-Error objects
+			throw new Error(`API request failed: ${String(error)}`);
 		}
-
-		return response.json();
 	}
 
 	async get<T>(endpoint: string): Promise<T> {
