@@ -1,41 +1,13 @@
-import { getTourPackages } from "@/lib/actions/packages";
-import clsx from "clsx";
 import { Star, Users } from 'lucide-react';
 import Image from "next/image";
 import Link from "next/link";
 import React from 'react'
+import clsx from "clsx";
+
+import { getTourPackages } from "@/lib/actions/packages";
+import { PLACEHOLDER_IMAGE } from "@/lib/utils";
 
 type Props = {}
-
-const packages = [
-    {
-        id: 1,
-        name: "Heritage Discovery Tour",
-        image: "https://images.unsplash.com/photo-1527668752968-14dc70a27c95?auto=format&fit=crop&w=600&h=400&q=80",
-        rating: 4.8,
-        price: 1250,
-        duration: "7 days",
-        people: "10+ People"
-    },
-    {
-        id: 2,
-        name: "Immersive Village Experience",
-        image: "https://images.unsplash.com/photo-1518182170546-07661fd94144?auto=format&fit=crop&w=600&h=400&q=80",
-        rating: 4.7,
-        price: 1450,
-        duration: "5 days",
-        people: "8+ People"
-    },
-    {
-        id: 3,
-        name: "Adventure & Nature Trail",
-        image: "https://images.unsplash.com/photo-1587595431973-160d0d94add1?auto=format&fit=crop&w=600&h=400&q=80",
-        rating: 4.9,
-        price: 1350,
-        duration: "8 days",
-        people: "12+ People"
-    }
-];
 
 const PackagesSection = async (props: Props) => {
 
@@ -51,17 +23,18 @@ const PackagesSection = async (props: Props) => {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {packages.map(pkg => (
+                    {packages.map(pkg =>
                         <div key={pkg._id} className="border border-gray-200 rounded-xl overflow-hidden shadow-sm card-hover">
                             <div className="relative w-full h-56">
                                 <Image
-                                    src={pkg.images.length ? pkg.images[0] : 'file.svg'}
+                                    src={pkg.images.length ? pkg.images[0] : PLACEHOLDER_IMAGE}
                                     alt={pkg.title}
                                     fill
                                     className={clsx(
                                         { "object-cover": !!pkg.images.length }
                                     )}
                                 />
+
                                 <div className="absolute top-4 right-4 bg-white/80 backdrop-blur-sm py-1 px-3 rounded-full text-sm font-medium">
                                     {pkg.duration_hours} hrs
                                 </div>
@@ -92,7 +65,7 @@ const PackagesSection = async (props: Props) => {
                                 </div>
                             </div>
                         </div>
-                    ))}
+                    )}
                 </div>
             </div>
         </section>

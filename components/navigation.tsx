@@ -7,6 +7,7 @@ import Link from 'next/link'
 
 import { Button } from '@/components/ui/button'
 import NavItem from './nav-item'
+import { routes } from "@/routes"
 
 type Props = {}
 
@@ -21,8 +22,8 @@ const Navigation = ({ }: Props) => {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const navigation: NavigationItem[] = [
-        { name: 'Home', href: '/' },
-        { name: 'About', href: '/about' },
+        { name: 'Home', href: routes.home },
+        { name: 'About', href: routes.about },
         // {
         //     name: 'Services',
         //     href: '#',
@@ -34,7 +35,7 @@ const Navigation = ({ }: Props) => {
         //         { name: 'Guided Cultural Tours', href: '/services/guided-cultural-tours' },
         //     ]
         // },
-        { name: 'Tour Packages', href: '/services/tour-packages' },
+        { name: 'Tour Packages', href: routes.packages },
         // { name: 'Upcoming Packages', href: '/packages' },
     ]
 

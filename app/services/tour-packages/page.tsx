@@ -1,9 +1,13 @@
-import { Calendar, Clock, Compass, MapPin, Tag, Users } from 'lucide-react'
-import React from 'react'
+'use client'
+
+import { ArrowDown01, ArrowDownAZ, ArrowUp10, ArrowUpZA, Calendar, CalendarIcon, Clock, Compass, MapPin, Tag, Users } from 'lucide-react'
+import React, { useState } from 'react'
 
 type Props = {}
 
 const PackagesPage = (props: Props) => {
+    const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
+
     return (
         <div className="min-h-screen pb-12">
             <div
@@ -24,6 +28,29 @@ const PackagesPage = (props: Props) => {
                     <p className="text-gray-600 max-w-2xl mx-auto mt-4">
                         Discover Africa through curated, all-inclusive experiences that blend heritage, adventure, and community. Our packages include guided tours, accommodations, cultural activities, and optional flight support—crafted to immerse you in unforgettable journeys.
                     </p>
+                </div>
+
+                <div className="flex flex-wrap justify-center gap-4 mb-12">
+                    <button className="flex items-center gap-2 bg-white px-5 py-3 rounded-md shadow-sm">
+                        <CalendarIcon className="w-5 h-5" />
+                        <span>Date</span>
+                    </button>
+                    <button
+                        className="flex items-center gap-2 bg-white px-5 py-3 rounded-md shadow-sm"
+                        onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                    >
+                        {sortOrder === 'asc' ? (
+                            <>
+                                <ArrowUp10 className="w-5 h-5" />
+                                <span>Price High To Low</span>
+                            </>
+                        ) : (
+                            <>
+                                <ArrowDown01 className="w-5 h-5" />
+                                <span>Price Low To High</span>
+                            </>
+                        )}
+                    </button>
                 </div>
 
                 {/* Featured Packages */}

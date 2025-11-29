@@ -10,6 +10,10 @@ const nextConfig: NextConfig = {
 			{
 				hostname: "example.com",
 				pathname: "**"
+			},
+			{
+				hostname: "images.unsplash.com",
+				pathname: "**"
 			}
 		]
 	}

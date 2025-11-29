@@ -1,92 +1,60 @@
 'use client'
 
-import { ArrowDownAZ, ArrowUpZA, Calendar, CalendarIcon, Users } from 'lucide-react';
-import React, { useState } from 'react'
+import { Calendar, Users } from 'lucide-react';
+import React, { useState, useEffect } from 'react'
 import Link from 'next/link';
-
-const destinations = [
-    {
-        id: 1,
-        name: "Switzerland",
-        image: "https://images.unsplash.com/photo-1527668752968-14dc70a27c95?auto=format&fit=crop&w=600&h=400&q=80",
-        date: "15 September 2023",
-        people: "10+ People",
-        description: "Experience the breathtaking Swiss Alps and charming villages",
-        price: 1100,
-        rating: 5.0,
-    },
-    {
-        id: 2,
-        name: "Berlin",
-        image: "https://images.unsplash.com/photo-1560969184-10fe8719e047?auto=format&fit=crop&w=600&h=400&q=80",
-        date: "20 September 2023",
-        people: "15+ People",
-        description: "Discover the vibrant culture and history of Berlin",
-        price: 1230,
-        rating: 4.9,
-    },
-    {
-        id: 3,
-        name: "Maldives",
-        image: "https://images.unsplash.com/photo-1514282401047-d79a71a590e8?auto=format&fit=crop&w=600&h=400&q=80",
-        date: "10 October 2023",
-        people: "12+ People",
-        description: "Relax in paradise with crystal clear waters",
-        price: 3000,
-        rating: 5.0,
-    },
-    {
-        id: 4,
-        name: "Toronto",
-        image: "https://images.unsplash.com/photo-1517090504586-fde19ea6066f?auto=format&fit=crop&w=600&h=400&q=80",
-        date: "25 September 2023",
-        people: "20+ People",
-        description: "Experience the diverse culture of Canada's largest city",
-        price: 2000,
-        rating: 4.8,
-    },
-    {
-        id: 5,
-        name: "Baku",
-        image: "https://images.unsplash.com/photo-1593085260707-5377ba37f868?auto=format&fit=crop&w=600&h=400&q=80",
-        date: "15 September 2023",
-        people: "15+ People",
-        description: "Explore the unique blend of ancient and modern Azerbaijan",
-        price: 1440,
-        rating: 5.0,
-    },
-    {
-        id: 6,
-        name: "Chinese Heritage",
-        image: "https://images.unsplash.com/photo-1508804185872-d7badad00f7d?auto=format&fit=crop&w=600&h=400&q=80",
-        date: "18 September 2023",
-        people: "10+ People",
-        description: "Journey through China's rich cultural heritage",
-        price: 1210,
-        rating: 4.0,
-    }
-];
+import Image from 'next/image';
+import { packagesApi } from '@/lib/api/packages';
+import { Package } from '@/types/package';
+import { format } from "date-fns";
+import { PLACEHOLDER_IMAGE } from "@/lib/utils";
 
 const PackagesPage = () => {
+    const [packages, setPackages] = useState<Package[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
+    const [totalPages, setTotalPages] = useState(1);
+    const [imageErrors, setImageErrors] = useState<Record<string, boolean>>({});
     const itemsPerPage = 6;
 
-    // Filter and sort logic here
-    const sortedDestinations = [...destinations].sort((a, b) => {
+    useEffect(() => {
+        const fetchPackages = async () => {
+            try {
+                setLoading(true);
+                setError(null);
+                const response = await packagesApi.getPackages(currentPage, itemsPerPage, { status: ['active'] });
+
+                // Handle both response formats (response and responses)
+                const data = response.responses || response.response;
+
+                if (data && 'docs' in data) {
+                    setPackages(data.docs);
+                    setTotalPages(data.pages);
+                } else {
+                    setError('Invalid response format');
+                }
+            } catch (err) {
+                setError('Failed to load packages. Please try again later.');
+                console.error('Error fetching packages:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchPackages();
+    }, [currentPage]);
+
+    // Client-side sorting
+    const sortedPackages = [...packages].sort((a, b) => {
         if (sortOrder === 'asc') {
-            return a.price - b.price;
+            return a.base_price - b.base_price;
         } else if (sortOrder === 'desc') {
-            return b.price - a.price;
+            return b.base_price - a.base_price;
         }
         return 0;
     });
-
-    // Calculate pagination
-    const indexOfLastDestination = currentPage * itemsPerPage;
-    const indexOfFirstDestination = indexOfLastDestination - itemsPerPage;
-    const currentDestinations = sortedDestinations.slice(indexOfFirstDestination, indexOfLastDestination);
-    const totalPages = Math.ceil(destinations.length / itemsPerPage);
 
     return (
         <div className="min-h-screen pb-12">
@@ -113,82 +81,106 @@ const PackagesPage = () => {
 
                 <div className="container mx-auto px-4">
                     <div className="flex flex-wrap justify-center gap-4 mb-12">
-                        <button className="flex items-center gap-2 bg-white px-5 py-3 rounded-md shadow-sm">
-                            <CalendarIcon className="w-5 h-5" />
-                            <span>Date</span>
-                        </button>
                         <button
-                            className="flex items-center gap-2 bg-white px-5 py-3 rounded-md shadow-sm"
-                            onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+                            className="flex items-center gap-2 bg-white px-5 py-3 rounded-md shadow-sm hover:bg-gray-50"
+                            onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : sortOrder === 'desc' ? null : 'asc')}
                         >
-                            {sortOrder === 'asc' ? (
-                                <>
-                                    <ArrowUpZA className="w-5 h-5" />
-                                    <span>Price High To Low</span>
-                                </>
-                            ) : (
-                                <>
-                                    <ArrowDownAZ className="w-5 h-5" />
-                                    <span>Price Low To High</span>
-                                </>
-                            )}
-                        </button>
-                        <button className="flex items-center gap-2 bg-white px-5 py-3 rounded-md shadow-sm">
-                            <ArrowDownAZ className="w-5 h-5" />
-                            <span>Name (A-Z)</span>
+                            <span>
+                                {sortOrder === null && 'Sort by Price'}
+                                {sortOrder === 'asc' && 'Price: Low to High ↑'}
+                                {sortOrder === 'desc' && 'Price: High to Low ↓'}
+                            </span>
                         </button>
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                        {currentDestinations.map((dest) => (
-                            <div key={dest.id} className="bg-white rounded-lg overflow-hidden shadow-md card-hover">
-                                <div className="relative">
-                                    <img
-                                        src={dest.image}
-                                        alt={dest.name}
-                                        className="w-full h-56 object-cover"
-                                    />
-                                    <div className="absolute bottom-0 left-0 bg-primary text-white px-4 py-2 flex items-center gap-2">
-                                        <Calendar className="w-4 h-4" />
-                                        <span className="text-sm">{dest.date}</span>
-                                    </div>
-                                    <div className="absolute bottom-0 right-0 bg-white text-dark px-4 py-2 flex items-center gap-2">
-                                        <Users className="w-4 h-4" />
-                                        <span className="text-sm">{dest.people}</span>
+                    {loading && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {Array(6).fill(0).map((_, i) => (
+                                <div key={i} className="bg-white rounded-lg overflow-hidden shadow-md animate-pulse">
+                                    <div className="w-full h-56 bg-gray-300"></div>
+                                    <div className="p-6">
+                                        <div className="h-6 bg-gray-300 rounded mb-2"></div>
+                                        <div className="h-4 bg-gray-300 rounded mb-4"></div>
+                                        <div className="h-8 bg-gray-300 rounded"></div>
                                     </div>
                                 </div>
+                            ))}
+                        </div>
+                    )}
 
-                                <div className="p-6">
-                                    <h3 className="text-2xl font-semibold mb-2">{dest.name}</h3>
-                                    <p className="text-gray-600 text-sm mb-4">{dest.description}</p>
+                    {error && (
+                        <div className="text-center py-12">
+                            <p className="text-red-600 text-lg mb-4">{error}</p>
+                            <button
+                                onClick={() => window.location.reload()}
+                                className="bg-primary hover:bg-primary-hover text-white px-6 py-2 rounded-md transition-colors"
+                            >
+                                Try Again
+                            </button>
+                        </div>
+                    )}
 
-                                    <div className="flex justify-between items-center">
-                                        <div>
-                                            <span className="text-xl font-bold">${dest.price.toLocaleString()}</span>
-                                            <div className="flex items-center mt-1">
-                                                <div className="flex">
-                                                    {Array(5).fill(0).map((_, i) => (
-                                                        <svg
-                                                            key={i}
-                                                            className={`w-4 h-4 ${i < Math.floor(dest.rating) ? 'text-yellow-400' : 'text-gray-300'}`}
-                                                            fill="currentColor"
-                                                            viewBox="0 0 20 20"
-                                                        >
-                                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                                                        </svg>
-                                                    ))}
-                                                </div>
-                                                <span className="text-gray-500 text-sm ml-1">{dest.rating}</span>
+                    {!loading && !error && sortedPackages.length === 0 && (
+                        <div className="text-center py-12">
+                            <p className="text-gray-600 text-lg">No packages available at the moment.</p>
+                        </div>
+                    )}
+
+                    {!loading && !error && sortedPackages.length > 0 && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                            {sortedPackages.map((pkg) => {
+                                const firstImage = pkg.images && pkg.images.length > 0
+                                    ? pkg.images[0]
+                                    : PLACEHOLDER_IMAGE;
+
+                                const displayImage = imageErrors[pkg._id] ? PLACEHOLDER_IMAGE : firstImage;
+
+                                const firstAvailableDate = pkg.available_dates && pkg.available_dates.length > 0
+                                    ? format(pkg.available_dates[0], 'do MMM, yyyy')
+                                    : 'Date TBD';
+
+                                return (
+                                    <div key={pkg._id} className="bg-white rounded-lg overflow-hidden shadow-md card-hover">
+                                        <div className="relative h-56">
+                                            <Image
+                                                src={displayImage}
+                                                alt={pkg.title}
+                                                fill
+                                                className="object-cover"
+                                                onError={() => {
+                                                    setImageErrors(prev => ({ ...prev, [pkg._id]: true }));
+                                                }}
+                                                sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                                            />
+                                            <div className="absolute bottom-0 left-0 bg-primary text-white px-4 py-2 flex items-center gap-2 z-10">
+                                                <Calendar className="w-4 h-4" />
+                                                <span className="text-sm">{firstAvailableDate}</span>
+                                            </div>
+                                            <div className="absolute bottom-0 right-0 bg-white text-dark px-4 py-2 flex items-center gap-2 z-10">
+                                                <Users className="w-4 h-4" />
+                                                <span className="text-sm">{pkg.guest_limit}+ People</span>
                                             </div>
                                         </div>
-                                        <Link href={`/packages/${dest.id}`} className="bg-primary hover:bg-primary-hover text-white px-4 py-2 rounded-md transition-colors">
-                                            Details
-                                        </Link>
+
+                                        <div className="p-6">
+                                            <h3 className="text-2xl font-semibold mb-2">{pkg.title}</h3>
+                                            <p className="text-gray-600 text-sm mb-4 line-clamp-2">{pkg.description}</p>
+
+                                            <div className="flex justify-between items-center">
+                                                <div>
+                                                    <span className="text-xl font-bold">${pkg.base_price.toLocaleString()}</span>
+                                                    <p className="text-gray-500 text-xs mt-1">{pkg.duration_hours} hours</p>
+                                                </div>
+                                                <Link href={`/packages/${pkg._id}/book`} className="bg-primary hover:bg-primary-hover text-white px-4 py-2 rounded-md transition-colors">
+                                                    Details
+                                                </Link>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                        ))}
-                    </div>
+                                );
+                            })}
+                        </div>
+                    )}
 
                     {totalPages > 1 && (
                         <div className="flex justify-center mt-12">
@@ -229,7 +221,7 @@ const PackagesPage = () => {
                         <div className="md:w-1/2">
                             <h3 className="text-2xl font-semibold mb-4">Plan Your Trip</h3>
                             <p className="text-gray-600 mb-6">
-                                Ex optio sequi et quos praesentium in nostrum labore nam rerum iusto qui magni nescunt? Quo quidem neque iste explicita est dolo.
+                                Discover amazing destinations and create unforgettable memories with our carefully curated tour packages.
                             </p>
 
                             <div className="space-y-4">
@@ -289,11 +281,15 @@ const PackagesPage = () => {
                         </div>
 
                         <div className="md:w-1/2 flex justify-center">
-                            <img
-                                src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=600&h=400&q=80"
-                                alt="Travel essentials"
-                                className="max-w-full h-auto rounded-lg shadow-lg"
-                            />
+                            <div className="relative w-full h-80">
+                                <Image
+                                    src="https://images.unsplash.com/photo-1488646953014-85cb44e25828?auto=format&fit=crop&w=600&h=400&q=80"
+                                    alt="Travel essentials"
+                                    fill
+                                    className="object-cover rounded-lg shadow-lg"
+                                    sizes="(max-width: 768px) 100vw, 50vw"
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>
