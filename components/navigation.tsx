@@ -35,7 +35,7 @@ const Navigation = ({ }: Props) => {
         //         { name: 'Guided Cultural Tours', href: '/services/guided-cultural-tours' },
         //     ]
         // },
-        { name: 'Tour Packages', href: routes.packages },
+        { name: 'Tour Packages', href: routes.packages.index },
         // { name: 'Upcoming Packages', href: '/packages' },
     ]
 

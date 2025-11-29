@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 import { Package } from '@/types/package';
 import { PLACEHOLDER_IMAGE } from '@/lib/utils';
+import { routes } from "@/routes";
 
 interface PackageCardProps {
     package: Package;
@@ -58,7 +59,7 @@ export function PackageCard({ package: pkg, variant = 'default' }: PackageCardPr
                             <span className="text-gray-500 ml-1">/ person</span>
                         </div>
                         <Link
-                            href={`/packages/${pkg._id}/book`}
+                            href={routes.packages.details.replace(':package_id', pkg._id)}
                             className="bg-primary hover:bg-primary-hover text-white px-4 py-2 rounded-md text-sm transition-colors inline-block"
                         >
                             Book Now
@@ -100,7 +101,7 @@ export function PackageCard({ package: pkg, variant = 'default' }: PackageCardPr
                         <p className="text-gray-500 text-xs mt-1">{pkg.duration_hours} hours</p>
                     </div>
                     <Link
-                        href={`/packages/${pkg._id}/book`}
+                        href={routes.packages.details.replace(':package_id', pkg._id)}
                         className="bg-primary hover:bg-primary-hover text-white px-4 py-2 rounded-md transition-colors"
                     >
                         Details
