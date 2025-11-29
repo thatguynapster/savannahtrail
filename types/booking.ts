@@ -1,5 +1,14 @@
 import { Package } from "./package";
 
+export interface Invoice {
+	_id: string;
+	booking_id: string;
+	amount: number;
+	currency: string;
+	status: "pending" | "paid" | "failed";
+	paystack_authorization_url: string;
+}
+
 export interface Booking {
 	_id: string;
 	package_id: string;
@@ -18,6 +27,12 @@ export interface Booking {
 	booking_status: "pending" | "confirmed" | "cancelled" | "completed";
 	assigned_guide_id: string | null;
 	total_amount: number;
+	invoice_id?: string;
+}
+
+export interface BookingCreateResponse {
+	booking: Booking;
+	invoice: Invoice;
 }
 
 export interface BookingCreateRequest {

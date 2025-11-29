@@ -8,7 +8,7 @@ import { z } from 'zod';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { Package } from '@/types/package';
-import { BookingCreateRequest } from '@/types/booking';
+import { BookingCreateRequest, BookingCreateResponse } from '@/types/booking';
 import { bookingsApi } from '@/lib/api/bookings';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -24,6 +24,7 @@ import { cn } from '@/lib/utils';
 import { PhoneInput } from "./ui/phone-input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Separator } from "./ui/separator";
+import { toast } from "sonner";
 
 interface PackageBookingFormProps {
     package: Package;
@@ -98,8 +99,28 @@ export default function PackageBookingForm({ package: pkg }: PackageBookingFormP
             const response = await bookingsApi.createBooking(bookingData);
 
             if (response.success && response.responses) {
-                // Redirect to success page or booking confirmation
-                router.push(`/packages/${pkg._id}/book?success=true`);
+                const bookingResponse = response.responses;
+
+                // Show success notification
+                toast.success('Booking created successfully!', {
+                    description: 'Redirecting you to the payment page...',
+                    duration: 3000,
+                });
+
+                // Check if payment URL exists
+                // if (bookingResponse.invoice?.paystack_authorization_url) {
+                // Open payment page in new tab after a short delay
+                setTimeout(() => {
+                    window.open(bookingResponse.invoice.paystack_authorization_url, '_blank');
+                }, 1500);
+                // } else {
+                //     // Fallback: redirect to booking confirmation
+                //     setTimeout(() => {
+                //         router.push(`/packages/${pkg._id}/book?success=true`);
+                //     }, 2000);
+                // }
+
+                form.reset();
             } else {
                 setError('Failed to create booking. Please try again.');
             }

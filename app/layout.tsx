@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import Navigation from "../components/navigation";
 import { poppins, volkhov } from "./fonts";
 import Footer from "@/components/footer";
+import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -25,6 +26,7 @@ export default function RootLayout({
         <Navigation />
         {children}
         <Footer />
+        <Toaster />
       </body>
     </html>
   );

@@ -1,6 +1,10 @@
 import queryString from "query-string";
 
-import { Booking, BookingCreateRequest } from "@/types/booking";
+import {
+	Booking,
+	BookingCreateRequest,
+	BookingCreateResponse
+} from "@/types/booking";
 import { APIResponse } from "@/types/api";
 import { apiClient } from "./client";
 
@@ -14,9 +18,9 @@ export interface BookingsResponse {
 export const bookingsApi = {
 	createBooking: async (
 		data: BookingCreateRequest
-	): Promise<APIResponse<Booking>> => {
+	): Promise<APIResponse<BookingCreateResponse>> => {
 		try {
-			return apiClient.post<APIResponse<Booking>>(
+			return apiClient.post<APIResponse<BookingCreateResponse>>(
 				"/bookings/create",
 				data
 			);
