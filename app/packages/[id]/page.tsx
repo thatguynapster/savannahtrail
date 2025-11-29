@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useParams } from 'next/navigation';
 import { Package } from '@/types/package';
 import { packagesApi } from '@/lib/api/packages';
@@ -35,6 +35,7 @@ export default function PackageDetailsPage() {
     });
 
     const [activeTab, setActiveTab] = useState<TabType>('information');
+    const observerRef = useRef<IntersectionObserver | null>(null);
 
     useEffect(() => {
         const fetchPackage = async () => {
@@ -88,6 +89,55 @@ export default function PackageDetailsPage() {
 
         fetchPackage();
     }, [packageId]);
+
+    // Set up Intersection Observer for active tab detection
+    useEffect(() => {
+        // Only set up observer after package is loaded
+        if (state.loading || !state.package) {
+            return;
+        }
+
+        const sections = ['information', 'tour-plan', 'location', 'gallery'] as TabType[];
+
+        // Create a map to track which sections are currently intersecting
+        const intersectingMap = new Map<TabType, boolean>();
+
+        const observerCallback = (entries: IntersectionObserverEntry[]) => {
+            entries.forEach((entry) => {
+                const sectionId = entry.target.id as TabType;
+                intersectingMap.set(sectionId, entry.isIntersecting);
+            });
+
+            // Find the first intersecting section in order
+            const firstIntersecting = sections.find(id => intersectingMap.get(id));
+
+            if (firstIntersecting) {
+                setActiveTab(firstIntersecting);
+            }
+        };
+
+        // Create observer with threshold and rootMargin for better detection
+        observerRef.current = new IntersectionObserver(observerCallback, {
+            root: null,
+            rootMargin: '-100px 0px -50% 0px', // Trigger when section is near top
+            threshold: [0, 0.25, 0.5, 0.75, 1]
+        });
+
+        // Observe all sections
+        sections.forEach((sectionId) => {
+            const element = document.getElementById(sectionId);
+            if (element && observerRef.current) {
+                observerRef.current.observe(element);
+            }
+        });
+
+        // Cleanup
+        return () => {
+            if (observerRef.current) {
+                observerRef.current.disconnect();
+            }
+        };
+    }, [state.loading, state.package]);
 
     const handleRetry = () => {
         setState(prev => ({ ...prev, loading: true, error: null }));
