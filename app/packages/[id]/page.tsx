@@ -275,10 +275,7 @@ export default function PackageDetailsPage() {
                         {/* Right Column - Booking Form */}
                         <div className="lg:col-span-1">
                             <div className="lg:sticky lg:top-24">
-                                <div className="bg-white rounded-lg shadow-lg p-6">
-                                    <h3 className="text-2xl font-bold mb-6">Book This Tour</h3>
-                                    <PackageBookingForm package={pkg} />
-                                </div>
+                                <PackageBookingForm package={pkg} />
                             </div>
                         </div>
                     </div>

@@ -23,7 +23,7 @@ export function GallerySection({ images, title }: GallerySectionProps) {
 
     return (
         <section id="gallery" className="py-8">
-            <h3 className="text-2xl font-bold mb-6">From our gallery</h3>
+            <h3 className="text-2xl font-bold pt-4 mb-6">From our gallery</h3>
 
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                 {images.map((image, index) => {
