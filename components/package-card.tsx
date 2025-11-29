@@ -91,8 +91,8 @@ export function PackageCard({ package: pkg, variant = 'default' }: PackageCardPr
             </div>
 
             <div className="p-6">
-                <h3 className="text-2xl font-semibold mb-2">{pkg.title}</h3>
-                <p className="text-gray-600 text-sm mb-4 line-clamp-2">{pkg.description}</p>
+                <h3 className="text-2xl font-semibold mb-2 line-clamp-1">{pkg.title}</h3>
+                <p className="text-gray-600 text-sm mb-4 line-clamp-1">{pkg.description}</p>
 
                 <div className="flex justify-between items-center">
                     <div>

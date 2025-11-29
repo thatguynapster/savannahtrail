@@ -1,22 +1,17 @@
 import { ArrowRight, Award, Clock, ShieldCheck, Users } from 'lucide-react'
 import React from 'react'
 
+import { HeroSection } from "@/components/package-details/hero-section"
+
 type Props = {}
 
 const AboutPage = (props: Props) => {
     return (
         <div className="min-h-screen">
-            <div
-                className="relative h-80 bg-cover bg-center"
-                style={{ backgroundImage: "url('/img/about-banner.png')" }}
-            >
-                <div className="absolute inset-0 bg-black/60"></div>
-                <div className="container mx-auto px-4 h-full flex items-center justify-center relative z-10">
-                    <div className="text-center text-white">
-                        <h1 className="text-5xl font-cursive font-bold">About Us</h1>
-                    </div>
-                </div>
-            </div>
+            <HeroSection
+                title={"About Us"}
+                backgroundImage={'/img/about-banner.png'}
+            />
 
             <section className="py-20 overflow-x-clip">
                 <div className="container mx-auto px-4">

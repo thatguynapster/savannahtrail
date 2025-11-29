@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { packagesApi } from '@/lib/api/packages';
 import { Package } from '@/types/package';
 import { PackageCard } from '@/components/package-card';
+import { HeroSection } from "@/components/package-details/hero-section";
 
 const PackagesPage = () => {
     const [packages, setPackages] = useState<Package[]>([]);
@@ -54,18 +55,11 @@ const PackagesPage = () => {
 
     return (
         <div className="min-h-screen pb-12">
-            <div
-                className="relative h-80 bg-cover bg-center"
-                style={{ backgroundImage: "url('https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=1920&h=600&q=80')" }}
-            >
-                <div className="absolute inset-0 bg-black/60"></div>
-                <div className="container mx-auto px-4 h-full flex items-center justify-center relative z-10">
-                    <div className="text-center text-white">
-                        <h1 className="text-5xl font-cursive font-bold">Plan Your Trip</h1>
-                        <h2 className="mt-8 text-3xl capitalize">Experience Culture, History, and Adventure</h2>
-                    </div>
-                </div>
-            </div>
+            <HeroSection
+                title={"Plan Your Trip"}
+                subHeading="Experience Culture, History, and Adventure"
+                backgroundImage={'https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?auto=format&fit=crop&w=1920&h=600&q=80'}
+            />
 
             <section className="py-16">
                 <div className="text-center mb-8">
