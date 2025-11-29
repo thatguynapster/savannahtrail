@@ -19,6 +19,13 @@ export interface Package {
 	available_dates: Date[];
 	status: PackageStatus;
 	created_at: string;
+
+	// Extended fields for package details page
+	destination?: string;
+	departure_time?: string;
+	return_time?: string;
+	included_services?: string[];
+	excluded_services?: string[];
 }
 
 export interface PackageFilters {
