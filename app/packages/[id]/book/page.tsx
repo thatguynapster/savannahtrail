@@ -4,13 +4,15 @@ import PackageBookingForm from "@/components/package-booking-form";
 import { getTourPackage } from "@/lib/actions/packages";
 
 interface PageProps {
-    params: {
+    params: Promise<{
         id: string;
-    };
+    }>
 }
 
 export default async function BookPackagePage({ params }: PageProps) {
-    const { responses: pkg } = await getTourPackage(params.id);
+    const { id } = await params
+
+    const { responses: pkg } = await getTourPackage(id);
     console.log("Tour Package:", pkg);
 
     if (!pkg) {
