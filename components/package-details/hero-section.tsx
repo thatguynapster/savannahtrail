@@ -15,11 +15,11 @@ export function HeroSection({ title, subHeading, backgroundImage }: HeroSectionP
     const displayImage = imageError ? PLACEHOLDER_IMAGE : backgroundImage;
 
     return (
-        <div className="relative h-64 md:h-80 w-full overflow-hidden">
+        <header className="relative h-64 md:h-80 w-full overflow-hidden" role="banner">
             {/* Background Image */}
             <Image
                 src={displayImage}
-                alt={title}
+                alt={`${title} destination background`}
                 fill
                 priority
                 className="object-cover"
@@ -28,7 +28,7 @@ export function HeroSection({ title, subHeading, backgroundImage }: HeroSectionP
             />
 
             {/* Overlay for text contrast */}
-            <div className="absolute inset-0 bg-black/60" />
+            <div className="absolute inset-0 bg-black/60" aria-hidden="true" />
 
             {/* Title */}
             <div className="absolute inset-0 flex items-center justify-center">
@@ -41,6 +41,6 @@ export function HeroSection({ title, subHeading, backgroundImage }: HeroSectionP
                     }
                 </div>
             </div>
-        </div>
+        </header>
     );
 }

@@ -23,15 +23,20 @@ export function ItineraryDetails({
     }
 
     return (
-        <section id="tour-plan" className="py-8">
+        <section
+            id="tour-plan"
+            className="py-8"
+            role="tabpanel"
+            aria-labelledby="tour-plan-tab"
+        >
             <div className="space-y-6">
                 <h2 className="text-2xl md:text-3xl font-bold">Tour Plan</h2>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                     {/* Destination */}
                     {destination && (
-                        <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg">
-                            <div className="flex-shrink-0 w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                        <article className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg">
+                            <div className="flex-shrink-0 w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center" aria-hidden="true">
                                 <MapPin className="w-5 h-5 text-primary" />
                             </div>
                             <div>
@@ -40,13 +45,13 @@ export function ItineraryDetails({
                                 </h3>
                                 <p className="text-gray-700">{destination}</p>
                             </div>
-                        </div>
+                        </article>
                     )}
 
                     {/* Departure Time */}
                     {departureTime && (
-                        <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg">
-                            <div className="flex-shrink-0 w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                        <article className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg">
+                            <div className="flex-shrink-0 w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center" aria-hidden="true">
                                 <Clock className="w-5 h-5 text-primary" />
                             </div>
                             <div>
@@ -55,13 +60,13 @@ export function ItineraryDetails({
                                 </h3>
                                 <p className="text-gray-700">{formatTime(departureTime)}</p>
                             </div>
-                        </div>
+                        </article>
                     )}
 
                     {/* Return Time */}
                     {returnTime && (
-                        <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg">
-                            <div className="flex-shrink-0 w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                        <article className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg">
+                            <div className="flex-shrink-0 w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center" aria-hidden="true">
                                 <Calendar className="w-5 h-5 text-primary" />
                             </div>
                             <div>
@@ -70,7 +75,7 @@ export function ItineraryDetails({
                                 </h3>
                                 <p className="text-gray-700">{formatTime(returnTime)}</p>
                             </div>
-                        </div>
+                        </article>
                     )}
                 </div>
             </div>

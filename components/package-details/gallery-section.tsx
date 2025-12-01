@@ -22,10 +22,19 @@ export function GallerySection({ images, title }: GallerySectionProps) {
     }
 
     return (
-        <section id="gallery" className="py-8">
+        <section
+            id="gallery"
+            className="py-8"
+            role="tabpanel"
+            aria-labelledby="gallery-tab"
+        >
             <h3 className="text-2xl font-bold pt-4 mb-6">From our gallery</h3>
 
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+            <div
+                className="grid grid-cols-2 md:grid-cols-3 gap-4"
+                role="list"
+                aria-label={`${title} photo gallery`}
+            >
                 {images.map((image, index) => {
                     const displayImage = failedImages.has(index) ? PLACEHOLDER_IMAGE : image;
 
@@ -33,10 +42,11 @@ export function GallerySection({ images, title }: GallerySectionProps) {
                         <div
                             key={index}
                             className="relative aspect-[4/3] overflow-hidden rounded-lg bg-gray-100"
+                            role="listitem"
                         >
                             <Image
                                 src={displayImage}
-                                alt={`${title} - Image ${index + 1}`}
+                                alt={`${title} destination photo ${index + 1} of ${images.length}`}
                                 fill
                                 className="object-cover hover:scale-105 transition-transform duration-300"
                                 onError={() => handleImageError(index)}

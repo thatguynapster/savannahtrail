@@ -21,14 +21,18 @@ function ServiceList({ title, items, icon }: ServiceListProps) {
     const Icon = icon === 'check' ? Check : X;
     const iconColor = icon === 'check' ? 'text-green-600' : 'text-red-600';
     const bgColor = icon === 'check' ? 'bg-green-50' : 'bg-red-50';
+    const ariaLabel = icon === 'check' ? 'Included' : 'Not included';
 
     return (
         <div>
             <h4 className="text-lg font-semibold mb-4">{title}</h4>
-            <ul className="space-y-3">
+            <ul className="space-y-3" aria-label={`${title} services`}>
                 {items.map((item, index) => (
                     <li key={index} className={`flex items-start gap-3 p-3 rounded-lg ${bgColor}`}>
-                        <Icon className={`w-5 h-5 ${iconColor} mt-0.5 flex-shrink-0`} />
+                        <Icon
+                            className={`w-5 h-5 ${iconColor} mt-0.5 flex-shrink-0`}
+                            aria-label={ariaLabel}
+                        />
                         <span className="text-gray-800">{item}</span>
                     </li>
                 ))}
@@ -46,7 +50,12 @@ export function IncludedServices({ included, notIncluded }: IncludedServicesProp
     }
 
     return (
-        <section id="location" className="py-8">
+        <section
+            id="location"
+            className="py-8"
+            role="tabpanel"
+            aria-labelledby="location-tab"
+        >
             <h3 className="text-2xl font-bold mb-6">What&apos;s Included</h3>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

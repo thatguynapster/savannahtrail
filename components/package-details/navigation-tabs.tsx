@@ -2,6 +2,7 @@
 
 import { Info, Calendar, MapPin, Image as ImageIcon } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useRef, useEffect, KeyboardEvent } from 'react';
 
 export type TabType = 'information' | 'tour-plan' | 'location' | 'gallery';
 
@@ -27,6 +28,8 @@ const tabs: Tab[] = [
 const SCROLL_OFFSET = 80;
 
 export function NavigationTabs({ activeTab, onTabChange }: NavigationTabsProps) {
+    const tabRefs = useRef<Map<TabType, HTMLButtonElement>>(new Map());
+
     const handleTabClick = (tabId: TabType) => {
         // Update active tab state
         onTabChange(tabId);
@@ -44,10 +47,49 @@ export function NavigationTabs({ activeTab, onTabChange }: NavigationTabsProps) 
         }
     };
 
+    const handleKeyDown = (event: KeyboardEvent<HTMLButtonElement>, currentTabId: TabType) => {
+        const currentIndex = tabs.findIndex(tab => tab.id === currentTabId);
+        let nextIndex: number | null = null;
+
+        switch (event.key) {
+            case 'ArrowLeft':
+                event.preventDefault();
+                nextIndex = currentIndex > 0 ? currentIndex - 1 : tabs.length - 1;
+                break;
+            case 'ArrowRight':
+                event.preventDefault();
+                nextIndex = currentIndex < tabs.length - 1 ? currentIndex + 1 : 0;
+                break;
+            case 'Home':
+                event.preventDefault();
+                nextIndex = 0;
+                break;
+            case 'End':
+                event.preventDefault();
+                nextIndex = tabs.length - 1;
+                break;
+        }
+
+        if (nextIndex !== null) {
+            const nextTab = tabs[nextIndex];
+            handleTabClick(nextTab.id);
+
+            // Focus the next tab button
+            const nextButton = tabRefs.current.get(nextTab.id);
+            if (nextButton) {
+                nextButton.focus();
+            }
+        }
+    };
+
     return (
         <div className="border-b border-gray-200 bg-white sticky top-[60px] z-10">
             <div className="container mx-auto px-4">
-                <nav className="flex space-x-8 overflow-x-auto">
+                <nav
+                    className="flex space-x-8 overflow-x-auto"
+                    role="tablist"
+                    aria-label="Package information sections"
+                >
                     {tabs.map((tab) => {
                         const Icon = tab.icon;
                         const isActive = activeTab === tab.id;
@@ -55,15 +97,25 @@ export function NavigationTabs({ activeTab, onTabChange }: NavigationTabsProps) 
                         return (
                             <button
                                 key={tab.id}
+                                ref={(el) => {
+                                    if (el) {
+                                        tabRefs.current.set(tab.id, el);
+                                    }
+                                }}
+                                role="tab"
+                                aria-selected={isActive}
+                                aria-controls={tab.id}
+                                tabIndex={isActive ? 0 : -1}
                                 onClick={() => handleTabClick(tab.id)}
+                                onKeyDown={(e) => handleKeyDown(e, tab.id)}
                                 className={cn(
-                                    'flex items-center gap-2 py-4 px-2 border-b-2 transition-colors whitespace-nowrap',
+                                    'flex items-center gap-2 py-4 px-2 border-b-2 transition-colors whitespace-nowrap focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2',
                                     isActive
                                         ? 'border-primary text-primary font-medium'
                                         : 'border-transparent text-gray-600 hover:text-gray-900 hover:border-gray-300'
                                 )}
                             >
-                                <Icon className="w-5 h-5" />
+                                <Icon className="w-5 h-5" aria-hidden="true" />
                                 <span>{tab.label}</span>
                             </button>
                         );

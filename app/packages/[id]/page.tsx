@@ -149,12 +149,16 @@ export default function PackageDetailsPage() {
     if (state.loading) {
         return (
             <>
-                <main className="min-h-screen">
+                <main className="min-h-screen" aria-busy="true" aria-label="Loading package details">
+                    <div className="sr-only" role="status" aria-live="polite">
+                        Loading package information...
+                    </div>
+
                     {/* Hero Skeleton */}
-                    <Skeleton className="h-[400px] md:h-[500px] w-full rounded-none" />
+                    <Skeleton className="h-[400px] md:h-[500px] w-full rounded-none" aria-hidden="true" />
 
                     {/* Tabs Skeleton */}
-                    <div className="border-b border-gray-200 bg-white">
+                    <div className="border-b border-gray-200 bg-white" aria-hidden="true">
                         <div className="container mx-auto px-4">
                             <div className="flex space-x-8">
                                 {[1, 2, 3, 4].map((i) => (
@@ -165,7 +169,7 @@ export default function PackageDetailsPage() {
                     </div>
 
                     {/* Content Skeleton */}
-                    <div className="container mx-auto px-4 py-8">
+                    <div className="container mx-auto px-4 py-8" aria-hidden="true">
                         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                             {/* Left Column */}
                             <div className="lg:col-span-2 space-y-8">
@@ -191,35 +195,42 @@ export default function PackageDetailsPage() {
             <>
                 <main className="min-h-screen flex items-center justify-center bg-gray-50">
                     <div className="max-w-md w-full mx-4">
-                        <div className="bg-white rounded-lg shadow-lg p-8 text-center">
+                        <article
+                            className="bg-white rounded-lg shadow-lg p-8 text-center"
+                            role="alert"
+                            aria-live="polite"
+                        >
                             <div className="flex justify-center mb-4">
-                                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
+                                <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center" aria-hidden="true">
                                     <AlertCircle className="w-8 h-8 text-red-600" />
                                 </div>
                             </div>
 
-                            <h2 className="text-2xl font-bold text-gray-900 mb-2">
+                            <h1 className="text-2xl font-bold text-gray-900 mb-2">
                                 {state.error === 'Package not found' ? 'Package Not Found' : 'Oops! Something Went Wrong'}
-                            </h2>
+                            </h1>
 
                             <p className="text-gray-600 mb-6">
                                 {state.error}
                             </p>
 
-                            <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                            <nav className="flex flex-col sm:flex-row gap-3 justify-center" aria-label="Error page actions">
                                 {state.error !== 'Package not found' && (
-                                    <Button onClick={handleRetry} variant="primary">
+                                    <Button onClick={handleRetry} variant="primary" aria-label="Retry loading package">
                                         Try Again
                                     </Button>
                                 )}
 
                                 <Link href="/packages">
-                                    <Button variant={state.error === 'Package not found' ? 'primary' : 'outline'}>
+                                    <Button
+                                        variant={state.error === 'Package not found' ? 'primary' : 'outline'}
+                                        aria-label="Return to packages listing page"
+                                    >
                                         Back to Packages
                                     </Button>
                                 </Link>
-                            </div>
-                        </div>
+                            </nav>
+                        </article>
                     </div>
                 </main>
             </>
@@ -247,7 +258,7 @@ export default function PackageDetailsPage() {
                 <div className="container mx-auto px-4 py-8">
                     <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                         {/* Left Column - Package Details */}
-                        <div className="lg:col-span-2 space-y-8">
+                        <article className="lg:col-span-2 space-y-8" aria-label="Package details">
                             <PackageInformation
                                 title={pkg.title}
                                 price={pkg.base_price}
@@ -270,14 +281,14 @@ export default function PackageDetailsPage() {
                                 images={pkg.images}
                                 title={pkg.title}
                             />
-                        </div>
+                        </article>
 
                         {/* Right Column - Booking Form */}
-                        <div className="lg:col-span-1">
+                        <aside className="lg:col-span-1" aria-label="Booking form">
                             <div className="lg:sticky lg:top-24">
                                 <PackageBookingForm package={pkg} />
                             </div>
-                        </div>
+                        </aside>
                     </div>
                 </div>
             </main>

@@ -8,6 +8,7 @@ import Link from 'next/link'
 import { Button } from '@/components/ui/button'
 import NavItem from './nav-item'
 import { routes } from "@/routes"
+import { PLACEHOLDER_IMAGE } from '@/lib/utils'
 
 type Props = {}
 
@@ -20,6 +21,7 @@ interface NavigationItem {
 const Navigation = ({ }: Props) => {
     const [isScrolled, setIsScrolled] = useState(false);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [logoError, setLogoError] = useState(false);
 
     const navigation: NavigationItem[] = [
         { name: 'Home', href: routes.home },
@@ -64,7 +66,14 @@ const Navigation = ({ }: Props) => {
             >
                 <div className="container mx-auto px-4 flex justify-between items-center">
                     <Link href="/" className="flex w-16 h-8 relative items-center">
-                        <Image src={'/img/logo.png'} alt='' fill />
+                        <Image
+                            src={logoError ? PLACEHOLDER_IMAGE : '/img/logo.png'}
+                            alt='Logo'
+                            fill
+                            priority
+                            onError={() => setLogoError(true)}
+                            sizes="64px"
+                        />
                     </Link>
 
                     {/* Desktop Menu */}
