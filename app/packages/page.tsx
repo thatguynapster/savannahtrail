@@ -14,7 +14,7 @@ const PackagesPage = () => {
     const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
-    const itemsPerPage = 6;
+    const itemsPerPage = 24;
 
     useEffect(() => {
         const fetchPackages = async () => {
@@ -159,7 +159,7 @@ const PackagesPage = () => {
                         </div>
                     )}
 
-                    <div className="mt-20 flex flex-col md:flex-row justify-between items-center gap-8 bg-white p-8 rounded-xl shadow-md">
+                    {/* <div className="mt-20 flex flex-col md:flex-row justify-between items-center gap-8 bg-white p-8 rounded-xl shadow-md">
                         <div className="md:w-1/2">
                             <h3 className="text-2xl font-semibold mb-4">Plan Your Trip</h3>
                             <p className="text-gray-600 mb-6">
@@ -233,7 +233,7 @@ const PackagesPage = () => {
                                 />
                             </div>
                         </div>
-                    </div>
+                    </div> */}
                 </div>
             </section>
         </div>

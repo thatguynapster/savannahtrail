@@ -18,9 +18,9 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Calendar } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
-import { CalendarIcon, Users, Clock, DollarSign } from 'lucide-react';
+import { CalendarIcon, Users, Clock, DollarSign, Currency } from 'lucide-react';
 import { format } from 'date-fns';
-import { cn } from '@/lib/utils';
+import { cn, formatPrice } from '@/lib/utils';
 import { PhoneInput } from "./ui/phone-input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Separator } from "./ui/separator";
@@ -154,8 +154,8 @@ export default function PackageBookingForm({ package: pkg }: PackageBookingFormP
                                 <span>Up to {pkg.guest_limit} guests</span>
                             </div>
                             <div className="flex items-center gap-1">
-                                <DollarSign className="w-4 h-4" />
-                                <span>${pkg.base_price} per person</span>
+                                <Currency className="w-4 h-4" />
+                                <span>{formatPrice(pkg.base_price, true)}</span>
                             </div>
                         </div>
                     </div>

@@ -29,7 +29,7 @@ export function PackageInformation({
                     <h2 className="text-3xl md:text-4xl font-bold">{title}</h2>
                     <div className="text-right">
                         <p className="text-3xl font-bold text-primary" aria-label={`Price: ${formatPrice(price, false)}`}>
-                            {formatPrice(price, false)}
+                            {formatPrice(price, true)}
                         </p>
                         <div className="flex items-center gap-1 text-gray-600 mt-1">
                             <Clock className="w-4 h-4" aria-hidden="true" />
