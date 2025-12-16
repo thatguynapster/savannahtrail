@@ -1,23 +1,40 @@
+'use client'
+
 import { Facebook, Twitter, Instagram, Linkedin } from 'lucide-react';
+import React, { useState } from 'react'
+import Image from "next/image";
 import Link from 'next/link'
-import React from 'react'
-import { Input } from './ui/input';
-import { Button } from './ui/button';
+
+import { PLACEHOLDER_IMAGE } from '@/lib/utils'
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 
 type Props = {}
 
 const Footer = (props: Props) => {
+
+    const [logoError, setLogoError] = useState(false);
+
     return (
         <footer className="bg-white pt-16 pb-8 border-t">
             <div className="container mx-auto px-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-                    <div>
-                        <Link href="/" className="inline-block mb-6">
-                            <span className="text-2xl font-serif">Travel<span className="text-primary">.</span></span>
+                    <div className="space-y-6">
+                        <Link href="/" className="flex w-16 h-8 relative items-center">
+                            <Image
+                                src={logoError ? PLACEHOLDER_IMAGE : '/img/logo-full.png'}
+                                alt='Logo'
+                                fill
+                                priority
+                                onError={() => setLogoError(true)}
+                                sizes="64px"
+                            />
                         </Link>
-                        <p className="text-gray-600 mb-6 text-sm">
+
+                        <p className="text-gray-600 text-sm">
                             Follow us for African travel inspiration.
                         </p>
+
                         <div className="flex space-x-4">
                             <a href="#" className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-primary hover:bg-primary hover:text-white transition-colors">
                                 <Linkedin className="w-4 h-4" />
