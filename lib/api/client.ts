@@ -3,6 +3,35 @@ import Cookies from "js-cookie";
 const API_BASE_URL =
 	process.env.API_BASE_URL || process.env.NEXT_PUBLIC_API_BASE_URL || "/api";
 
+// Input sanitization utility
+const sanitizeInput = (obj: any): any => {
+	if (typeof obj === "string") {
+		// Remove potentially dangerous HTML/JS patterns
+		return obj
+			.replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, "")
+			.replace(/<iframe\b[^<]*(?:(?!<\/iframe>)<[^<]*)*<\/iframe>/gi, "")
+			.replace(/javascript:/gi, "")
+			.replace(/on\w+\s*=/gi, "")
+			.trim();
+	}
+
+	if (Array.isArray(obj)) {
+		return obj.map(sanitizeInput);
+	}
+
+	if (obj && typeof obj === "object") {
+		const sanitized: any = {};
+		for (const [key, value] of Object.entries(obj)) {
+			// Sanitize both key and value
+			const sanitizedKey = key.replace(/[<>'"]/g, "");
+			sanitized[sanitizedKey] = sanitizeInput(value);
+		}
+		return sanitized;
+	}
+
+	return obj;
+};
+
 class ApiClient {
 	private baseURL: string;
 
@@ -72,16 +101,22 @@ class ApiClient {
 	}
 
 	async post<T>(endpoint: string, data?: any): Promise<T> {
+		// Sanitize input data before sending
+		const sanitizedData = data ? sanitizeInput(data) : undefined;
+
 		return this.request<T>(endpoint, {
 			method: "POST",
-			body: data ? JSON.stringify(data) : undefined
+			body: sanitizedData ? JSON.stringify(sanitizedData) : undefined
 		});
 	}
 
 	async put<T>(endpoint: string, data?: any): Promise<T> {
+		// Sanitize input data before sending
+		const sanitizedData = data ? sanitizeInput(data) : undefined;
+
 		return this.request<T>(endpoint, {
 			method: "PUT",
-			body: data ? JSON.stringify(data) : undefined
+			body: sanitizedData ? JSON.stringify(sanitizedData) : undefined
 		});
 	}
 

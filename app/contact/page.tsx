@@ -2,14 +2,59 @@
 
 import { Clock, Mail, MapPin, MessageSquare, Phone, Send } from 'lucide-react'
 import { toast } from '@/hooks/use-toast';
-import React from 'react'
+import React, { useState } from 'react'
+import { sanitizeFormData, isValidEmail, validateContent, RateLimiter } from '@/lib/security';
 
 type Props = {}
 
 const ContactPage = (props: Props) => {
+    const [rateLimiter] = useState(() => new RateLimiter(2, 60000)); // 2 attempts per minute
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
+
+        const formData = new FormData(e.target as HTMLFormElement);
+        const data = {
+            name: formData.get('name') as string,
+            email: formData.get('email') as string,
+            subject: formData.get('subject') as string,
+            message: formData.get('message') as string,
+        };
+
+        // Rate limiting check
+        const clientId = `contact_${Date.now()}`;
+        if (!rateLimiter.isAllowed(clientId)) {
+            toast({
+                title: "Too Many Attempts",
+                description: "Please wait a moment before submitting again.",
+                variant: "destructive"
+            });
+            return;
+        }
+
+        // Validate inputs
+        if (!isValidEmail(data.email)) {
+            toast({
+                title: "Invalid Email",
+                description: "Please enter a valid email address.",
+                variant: "destructive"
+            });
+            return;
+        }
+
+        if (!validateContent(data.message, 2000)) {
+            toast({
+                title: "Invalid Message",
+                description: "Message contains invalid content or is too long.",
+                variant: "destructive"
+            });
+            return;
+        }
+
+        // Sanitize form data
+        const sanitizedData = sanitizeFormData(data);
+        console.log('Contact form data:', sanitizedData);
+
         toast({
             title: "Message Sent",
             description: "We'll get back to you as soon as possible!",
@@ -75,8 +120,10 @@ const ContactPage = (props: Props) => {
                                         <input
                                             type="text"
                                             id="name"
+                                            name="name"
                                             className="input-field"
                                             placeholder="John Smith"
+                                            maxLength={100}
                                             required
                                         />
                                     </div>
@@ -85,8 +132,10 @@ const ContactPage = (props: Props) => {
                                         <input
                                             type="email"
                                             id="email"
+                                            name="email"
                                             className="input-field"
                                             placeholder="john@example.com"
+                                            maxLength={254}
                                             required
                                         />
                                     </div>
@@ -97,8 +146,10 @@ const ContactPage = (props: Props) => {
                                     <input
                                         type="text"
                                         id="subject"
+                                        name="subject"
                                         className="input-field"
                                         placeholder="How can we help you?"
+                                        maxLength={200}
                                         required
                                     />
                                 </div>
@@ -107,9 +158,11 @@ const ContactPage = (props: Props) => {
                                     <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">Message</label>
                                     <textarea
                                         id="message"
+                                        name="message"
                                         rows={5}
                                         className="input-field"
                                         placeholder="Write your message here..."
+                                        maxLength={2000}
                                         required
                                     ></textarea>
                                 </div>

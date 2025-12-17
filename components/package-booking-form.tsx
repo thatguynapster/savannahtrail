@@ -25,6 +25,7 @@ import { PhoneInput } from "./ui/phone-input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "./ui/card";
 import { Separator } from "./ui/separator";
 import { toast } from "sonner";
+import { sanitizeFormData, isValidEmail, isValidPhone, RateLimiter } from '@/lib/security';
 
 interface PackageBookingFormProps {
     package: Package;
@@ -50,6 +51,9 @@ type BookingFormData = z.infer<typeof bookingSchema>;
 export default function PackageBookingForm({ package: pkg }: PackageBookingFormProps) {
     const router = useRouter();
     const [error, setError] = useState<string | null>(null);
+
+    // Rate limiting for form submissions
+    const rateLimiter = new RateLimiter(3, 60000); // 3 attempts per minute
 
     const form = useForm<BookingFormData>({
         resolver: zodResolver(bookingSchema),
@@ -82,17 +86,38 @@ export default function PackageBookingForm({ package: pkg }: PackageBookingFormP
 
     const handleSubmit = async (data: BookingFormData) => {
         setError(null);
-        console.log('Booking Data:', data);
+
+        // Rate limiting check
+        const clientId = `booking_${Date.now()}`;
+        if (!rateLimiter.isAllowed(clientId)) {
+            setError('Too many submission attempts. Please wait a moment before trying again.');
+            return;
+        }
+
+        // Additional validation
+        if (!isValidEmail(data.guest_email)) {
+            setError('Please enter a valid email address.');
+            return;
+        }
+
+        if (!isValidPhone(data.guest_phone)) {
+            setError('Please enter a valid phone number.');
+            return;
+        }
+
+        // Sanitize form data
+        const sanitizedData = sanitizeFormData(data as any) as BookingFormData;
+        console.log('Booking Data:', sanitizedData);
 
         try {
             const bookingData: BookingCreateRequest = {
-                package_id: data.package_id,
-                guest_name: data.guest_name,
-                guest_phone: data.guest_phone,
-                guest_email: data.guest_email,
-                tour_date: data.tour_date,
-                num_guests: data.guest_limit,
-                addons: data.addons || [],
+                package_id: sanitizedData.package_id,
+                guest_name: sanitizedData.guest_name,
+                guest_phone: sanitizedData.guest_phone,
+                guest_email: sanitizedData.guest_email,
+                tour_date: sanitizedData.tour_date,
+                num_guests: sanitizedData.guest_limit,
+                addons: sanitizedData.addons || [],
                 redirect_url: window.location.origin + '/packages',
             };
 

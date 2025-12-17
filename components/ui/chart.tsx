@@ -65,6 +65,18 @@ const ChartContainer = React.forwardRef<
 })
 ChartContainer.displayName = "Chart"
 
+// Sanitize CSS values to prevent injection attacks
+const sanitizeCSSValue = (value: string): string => {
+  // Remove potentially dangerous characters and patterns
+  return value
+    .replace(/[<>'"\\]/g, '') // Remove HTML/JS injection chars
+    .replace(/javascript:/gi, '') // Remove javascript: protocol
+    .replace(/expression\s*\(/gi, '') // Remove CSS expressions
+    .replace(/url\s*\(/gi, '') // Remove url() functions
+    .replace(/import/gi, '') // Remove @import
+    .trim();
+};
+
 const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
   const colorConfig = Object.entries(config).filter(
     ([_, config]) => config.theme || config.color
@@ -74,23 +86,46 @@ const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
     return null
   }
 
+  // Sanitize the chart ID to prevent CSS injection
+  const sanitizedId = id.replace(/[^a-zA-Z0-9-_]/g, '');
+
   return (
     <style
       dangerouslySetInnerHTML={{
         __html: Object.entries(THEMES)
           .map(
-            ([theme, prefix]) => `
-${prefix} [data-chart=${id}] {
+            ([theme, prefix]) => {
+              // Sanitize theme prefix
+              const sanitizedPrefix = prefix.replace(/[^a-zA-Z0-9-_.\s]/g, '');
+
+              return `
+${sanitizedPrefix} [data-chart=${sanitizedId}] {
 ${colorConfig
-  .map(([key, itemConfig]) => {
-    const color =
-      itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
-      itemConfig.color
-    return color ? `  --color-${key}: ${color};` : null
-  })
-  .join("\n")}
+                  .map(([key, itemConfig]) => {
+                    // Sanitize the key
+                    const sanitizedKey = key.replace(/[^a-zA-Z0-9-_]/g, '');
+
+                    const color =
+                      itemConfig.theme?.[theme as keyof typeof itemConfig.theme] ||
+                      itemConfig.color;
+
+                    // Sanitize color value and validate it's a safe CSS color
+                    if (!color || typeof color !== 'string') return null;
+
+                    const sanitizedColor = sanitizeCSSValue(color);
+
+                    // Additional validation for color format (hex, rgb, hsl, named colors)
+                    const colorPattern = /^(#[0-9a-fA-F]{3,8}|rgb\([^)]+\)|rgba\([^)]+\)|hsl\([^)]+\)|hsla\([^)]+\)|[a-zA-Z]+)$/;
+
+                    if (!colorPattern.test(sanitizedColor)) return null;
+
+                    return sanitizedColor ? `  --color-${sanitizedKey}: ${sanitizedColor};` : null;
+                  })
+                  .filter(Boolean)
+                  .join("\n")}
 }
-`
+`;
+            }
           )
           .join("\n"),
       }}
@@ -103,13 +138,13 @@ const ChartTooltip = RechartsPrimitive.Tooltip
 const ChartTooltipContent = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<typeof RechartsPrimitive.Tooltip> &
-    React.ComponentProps<"div"> & {
-      hideLabel?: boolean
-      hideIndicator?: boolean
-      indicator?: "line" | "dot" | "dashed"
-      nameKey?: string
-      labelKey?: string
-    }
+  React.ComponentProps<"div"> & {
+    hideLabel?: boolean
+    hideIndicator?: boolean
+    indicator?: "line" | "dot" | "dashed"
+    nameKey?: string
+    labelKey?: string
+  }
 >(
   (
     {
@@ -259,10 +294,10 @@ const ChartLegend = RechartsPrimitive.Legend
 const ChartLegendContent = React.forwardRef<
   HTMLDivElement,
   React.ComponentProps<"div"> &
-    Pick<RechartsPrimitive.LegendProps, "payload" | "verticalAlign"> & {
-      hideIcon?: boolean
-      nameKey?: string
-    }
+  Pick<RechartsPrimitive.LegendProps, "payload" | "verticalAlign"> & {
+    hideIcon?: boolean
+    nameKey?: string
+  }
 >(
   (
     { className, hideIcon = false, payload, verticalAlign = "bottom", nameKey },
@@ -326,8 +361,8 @@ function getPayloadConfigFromPayload(
 
   const payloadPayload =
     "payload" in payload &&
-    typeof payload.payload === "object" &&
-    payload.payload !== null
+      typeof payload.payload === "object" &&
+      payload.payload !== null
       ? payload.payload
       : undefined
 
