@@ -180,7 +180,7 @@ const ContactPage = (props: Props) => {
                             <h3 className="text-2xl font-semibold mb-6">Contact Information</h3>
 
                             <div className="space-y-6">
-                                <div className="flex items-start gap-4">
+                                {/* <div className="flex items-start gap-4">
                                     <div className="bg-primary/10 p-3 rounded-full">
                                         <MessageSquare className="w-5 h-5 text-primary" />
                                     </div>
@@ -189,7 +189,7 @@ const ContactPage = (props: Props) => {
                                         <p className="text-gray-600 text-sm">Our friendly team is here to help.</p>
                                         <p className="text-primary font-medium mt-1">Start a chat</p>
                                     </div>
-                                </div>
+                                </div> */}
 
                                 <div className="flex items-start gap-4">
                                     <div className="bg-primary/10 p-3 rounded-full">
@@ -230,7 +230,7 @@ const ContactPage = (props: Props) => {
 
                 <div className="rounded-lg overflow-hidden h-96 mb-16">
                     <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d387193.30596552044!2d-74.25987368715494!3d40.697149422334705!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY%2C%20USA!5e0!3m2!1sen!2s!4v1626712100705!5m2!1sen!2s"
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d127066.75982423426!2d-0.2621316353683902!3d5.591202954243995!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xfdf9084b2b7a773%3A0xbed14ed8650e2dd3!2sAccra!5e0!3m2!1sen!2sgh!4v1776252623136!5m2!1sen!2sgh"
                         width="100%"
                         height="100%"
                         style={{ border: 0 }}

@@ -23,10 +23,10 @@ const AboutPage = (props: Props) => {
                                 className="rounded-lg shadow-lg w-full"
                             />
 
-                            <div className="absolute -bottom-10 -right-10 bg-white p-6 rounded-lg shadow-lg w-56">
+                            {/* <div className="absolute -bottom-10 -right-10 bg-white p-6 rounded-lg shadow-lg w-56">
                                 <h3 className="text-xl font-semibold mb-1">10+ Years</h3>
                                 <p className="text-gray-600">Of Travel Experience</p>
-                            </div>
+                            </div> */}
                         </div>
 
                         <div className="md:w-1/2">
@@ -58,17 +58,17 @@ const AboutPage = (props: Props) => {
 
                     <div className="flex flex-wrap justify-center gap-10">
                         <div className="rounded-full bg-white shadow-lg p-8 w-40 h-40 flex flex-col items-center justify-center text-center">
-                            <span className="text-3xl font-bold text-primary">82%</span>
+                            {/* <span className="text-3xl font-bold text-primary">82%</span> */}
                             <span className="text-gray-600 mt-2 uppercase">Cultural Tours</span>
                         </div>
 
                         <div className="rounded-full bg-white shadow-lg p-8 w-40 h-40 flex flex-col items-center justify-center text-center">
-                            <span className="text-3xl font-bold text-primary">64%</span>
+                            {/* <span className="text-3xl font-bold text-primary">64%</span> */}
                             <span className="text-gray-600 mt-2 uppercase">Community Programs</span>
                         </div>
 
                         <div className="rounded-full bg-white shadow-lg p-8 w-40 h-40 flex flex-col items-center justify-center text-center">
-                            <span className="text-3xl font-bold text-primary">46%</span>
+                            {/* <span className="text-3xl font-bold text-primary">46%</span> */}
                             <span className="text-gray-600 mt-2 uppercase">Festivals & Events</span>
                         </div>
                     </div>

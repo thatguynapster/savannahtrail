@@ -1,12 +1,17 @@
 "use server";
 
+import { PackageFilters } from "@/types/package";
 import { packagesApi } from "../api/packages";
 
-export const getTourPackages = async (filters: { limit: number }) => {
+export const getTourPackages = async (filters: {
+	limit: number;
+	status?: PackageFilters["status"];
+}) => {
 	try {
 		const tourPackages = await packagesApi.getPackages(
 			undefined,
-			filters.limit
+			filters.limit,
+			{ ...filters }
 		);
 		return tourPackages;
 	} catch (error) {

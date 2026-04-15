@@ -3,7 +3,7 @@ import { getTourPackages } from "@/lib/actions/packages";
 import { PackageCard } from './package-card';
 
 const PackagesSection = async () => {
-    const { responses: { docs: packages } } = await getTourPackages({ limit: 6 })
+    const { responses: { docs: packages } } = await getTourPackages({ limit: 6, status: ['active'] })
 
     return (
         <section className="py-20 bg-white">

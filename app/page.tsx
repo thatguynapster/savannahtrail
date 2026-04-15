@@ -25,7 +25,7 @@ export default function Home() {
 
       {/* <CategoriesSection /> */}
 
-      <PackagesSection />
+      {/* <PackagesSection /> */}
 
       <TestimonialsSection />
 

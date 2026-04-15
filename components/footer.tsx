@@ -18,7 +18,7 @@ const Footer = (props: Props) => {
     return (
         <footer className="bg-white pt-16 pb-8 border-t">
             <div className="container mx-auto px-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                     <div className="space-y-6">
                         <Link href="/" className="flex w-16 h-8 relative items-center">
                             <Image
@@ -55,14 +55,14 @@ const Footer = (props: Props) => {
                         <h4 className="text-lg font-semibold mb-6">Company</h4>
                         <ul className="space-y-3">
                             <li><Link href="/about" className="text-gray-600 hover:text-primary transition-colors">About Us</Link></li>
-                            <li><Link href="/careers" className="text-gray-600 hover:text-primary transition-colors">Careers</Link></li>
-                            <li><Link href="/blog" className="text-gray-600 hover:text-primary transition-colors">Blog</Link></li>
+                            {/* <li><Link href="/careers" className="text-gray-600 hover:text-primary transition-colors">Careers</Link></li> */}
+                            {/* <li><Link href="/blog" className="text-gray-600 hover:text-primary transition-colors">Blog</Link></li> */}
                             <li><Link href="/faqs" className="text-gray-600 hover:text-primary transition-colors">FAQs</Link></li>
                             <li><Link href="/privacy-policy" className="text-gray-600 hover:text-primary transition-colors">Privacy Policy</Link></li>
                         </ul>
                     </div>
 
-                    <div>
+                    {/* <div>
                         <h4 className="text-lg font-semibold mb-6">Destinations</h4>
                         <ul className="space-y-3">
                             <li><Link href="/destinations/cape-coast" className="text-gray-600 hover:text-primary transition-colors">Cape Coast & Elmina</Link></li>
@@ -70,7 +70,7 @@ const Footer = (props: Props) => {
                             <li><Link href="/destinations/johannesburg" className="text-gray-600 hover:text-primary transition-colors">Johannesburg & Soweto</Link></li>
                             <li><Link href="/destinations/marrakesh" className="text-gray-600 hover:text-primary transition-colors">Marrakesh</Link></li>
                         </ul>
-                    </div>
+                    </div> */}
 
                     <div>
                         <h4 className="text-lg font-semibold mb-6">Join Our Newsletter</h4>
